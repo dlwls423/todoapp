@@ -20,7 +20,7 @@ public class CardResponseDto {
 
     private LocalDateTime createdAt;
 
-    private User user;
+    private String username;
 
     public CardResponseDto(Card card){
         this.cardId = card.getCardId();
@@ -28,6 +28,6 @@ public class CardResponseDto {
         this.content = card.getContent();
         this.complete = card.isComplete();
         this.createdAt = card.getCreatedAt();
-        this.user = card.getUser();
+        this.username = card.getUser().getUsername();
     }
 }
