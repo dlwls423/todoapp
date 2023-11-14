@@ -7,15 +7,13 @@ import com.sparta.todoapp.jwt.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import java.io.IOException;
 
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -46,29 +44,29 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
 
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
-
-        StatusResponseDto statusResponseDto = new StatusResponseDto(HttpStatus.OK.value(), "로그인 성공");
-        String result = objectMapper.writeValueAsString(statusResponseDto);
 
         String token = jwtUtil.createToken(username);
 
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("utf-8");
-        response.getWriter().write(result);
+
+        insertStatusInfoIntoResponse(response, HttpStatus.OK.value(), "로그인 성공");
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
+
+        insertStatusInfoIntoResponse(response, HttpStatus.BAD_REQUEST.value(), failed.getMessage());
+    }
+
+    public void insertStatusInfoIntoResponse(HttpServletResponse response, int statusCode, String msg) throws IOException{
         ObjectMapper objectMapper = new ObjectMapper();
 
-        StatusResponseDto statusResponseDto = new StatusResponseDto(HttpStatus.BAD_REQUEST.value(), failed.getMessage());
+        StatusResponseDto statusResponseDto = new StatusResponseDto(statusCode, msg);
         String result = objectMapper.writeValueAsString(statusResponseDto);
 
-        response.setStatus(401);
+        response.setStatus(statusCode);
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
         response.getWriter().write(result);

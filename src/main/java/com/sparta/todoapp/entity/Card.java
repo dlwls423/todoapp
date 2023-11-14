@@ -1,36 +1,40 @@
 package com.sparta.todoapp.entity;
 
-import com.sparta.todoapp.dto.UserRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
 @Getter
 @Entity
-@Table(name = "users")
+@Table(name = "cards")
 @NoArgsConstructor
-public class User{
+public class Card extends TimeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long cardId;
 
     @Column(nullable = false)
-    private String username;
+    private String title;
 
     @Column(nullable = false)
-    private String password;
+    private String content;
 
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
+    @Column
+    private boolean complete = false;
+
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
+
 }
+
+
