@@ -27,6 +27,12 @@ public class CardService {
         return new CardResponseDto(saveCard);
     }
 
+    public CardResponseDto getCard(Long cardId) {
+        Card card = getCardEntity(cardId);
+        CardResponseDto responseDto = new CardResponseDto(card);
+        return responseDto;
+    }
+
     public Map<String,List<CardResponseDto>> getCards() {
         Map<String, List<CardResponseDto>> usernameCardMap = new HashMap<>();
 
@@ -38,5 +44,13 @@ public class CardService {
         }
 
         return usernameCardMap;
+    }
+
+
+    private Card getCardEntity(Long cardId){
+        Card card = cardRepository.findById(cardId).orElseThrow(
+            () -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다.")
+        );
+        return card;
     }
 }
