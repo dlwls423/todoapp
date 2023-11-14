@@ -1,5 +1,6 @@
 package com.sparta.todoapp.entity;
 
+import com.sparta.todoapp.dto.CardRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,6 +36,11 @@ public class Card extends TimeEntity {
     @JoinColumn(name="user_id")
     private User user;
 
+    public Card(CardRequestDto cardRequestDto, User user) {
+        this.title = cardRequestDto.getTitle();
+        this.content = cardRequestDto.getContent();
+        this.user = user;
+    }
 }
 
 

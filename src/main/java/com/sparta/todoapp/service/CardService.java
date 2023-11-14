@@ -1,6 +1,8 @@
 package com.sparta.todoapp.service;
 
+import com.sparta.todoapp.dto.CardRequestDto;
 import com.sparta.todoapp.dto.CardResponseDto;
+import com.sparta.todoapp.entity.Card;
 import com.sparta.todoapp.entity.User;
 import com.sparta.todoapp.repository.CardRepository;
 import com.sparta.todoapp.repository.UserRepository;
@@ -18,6 +20,12 @@ public class CardService {
     private final CardRepository cardRepository;
 
     private final UserRepository userRepository;
+
+    public CardResponseDto createCard(CardRequestDto cardRequestDto, User user) {
+        Card card = new Card(cardRequestDto, user);
+        Card saveCard = cardRepository.save(card);
+        return new CardResponseDto(saveCard);
+    }
 
     public Map<String,List<CardResponseDto>> getCards() {
         Map<String, List<CardResponseDto>> usernameCardMap = new HashMap<>();
