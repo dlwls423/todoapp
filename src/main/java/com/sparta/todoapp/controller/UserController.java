@@ -5,6 +5,7 @@ import com.sparta.todoapp.dto.UserRequestDto;
 import com.sparta.todoapp.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -31,7 +32,7 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
             new StatusResponseDto(
-                HttpStatus.OK.value(),
+                HttpStatus.CREATED.value(),
                 "회원가입 성공"
             )
         );
@@ -57,6 +58,16 @@ public class UserController {
             new StatusResponseDto(
                 HttpStatus.BAD_REQUEST.value(),
                 builder.toString()
+            )
+        );
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<StatusResponseDto> illegalArgumentException(IllegalArgumentException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            new StatusResponseDto(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage()
             )
         );
     }

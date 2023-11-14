@@ -7,12 +7,14 @@ import lombok.Getter;
 @Getter
 public class StatusResponseDto {
 
-    private final Error error;
+    private final int statusCode;
+
+    private final String msg;
 
     public StatusResponseDto(int statusCode, String msg){
-        this.error = new Error(statusCode, msg);
+        this.statusCode = statusCode;
+        this.msg = msg;
     }
 
-    record Error(int status, String msg){}
 
 }

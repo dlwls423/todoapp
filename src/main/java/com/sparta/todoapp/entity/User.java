@@ -26,8 +26,8 @@ public class User extends TimeEntity {
     @Column(nullable = false)
     private String password;
 
-    public User(UserRequestDto requestDto) {
-        this.username = requestDto.getUsername();
-        this.password = requestDto.getPassword();
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 }
