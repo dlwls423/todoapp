@@ -41,6 +41,11 @@ public class Card extends TimeEntity {
         this.content = cardRequestDto.getContent();
         this.user = user;
     }
+
+    public void update(CardRequestDto cardRequestDto) {
+        this.title = cardRequestDto.getTitle();
+        this.content = cardRequestDto.getContent();
+    }
 }
 
 

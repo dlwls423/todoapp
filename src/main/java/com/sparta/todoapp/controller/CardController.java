@@ -1,8 +1,10 @@
 package com.sparta.todoapp.controller;
 
+import com.sparta.todoapp.controller.exception.AuthorizeException;
+import com.sparta.todoapp.controller.exception.CardNotFoundException;
 import com.sparta.todoapp.dto.CardRequestDto;
+import com.sparta.todoapp.dto.CardInListResponseDto;
 import com.sparta.todoapp.dto.CardResponseDto;
-import com.sparta.todoapp.dto.ChosenCardResponseDto;
 import com.sparta.todoapp.dto.StatusResponseDto;
 import com.sparta.todoapp.security.UserDetailsImpl;
 import com.sparta.todoapp.service.CardService;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,24 +41,40 @@ public class CardController {
     }
 
     @GetMapping("/{cardId}")
-    public ResponseEntity<ChosenCardResponseDto> getCard(@PathVariable Long cardId){
-        ChosenCardResponseDto responseDto = cardService.getCard(cardId);
+    public ResponseEntity<CardResponseDto> getCard(@PathVariable Long cardId){
+        CardResponseDto responseDto = cardService.getCard(cardId);
         return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping
-    public ResponseEntity<Map<String, List<CardResponseDto>>> getCards(){
-        Map<String, List<CardResponseDto>> usernameCardMap = cardService.getCards();
+    public ResponseEntity<Map<String, List<CardInListResponseDto>>> getCards(){
+        Map<String, List<CardInListResponseDto>> usernameCardMap = cardService.getCards();
 
         return ResponseEntity.ok(usernameCardMap);
     }
 
+    @PatchMapping("/{cardId}")
+    public ResponseEntity<CardResponseDto> updateCard(@PathVariable Long cardId, @RequestBody CardRequestDto cardRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        CardResponseDto responseDto = cardService.updateCard(cardId, cardRequestDto, userDetails.getUser());
+        return ResponseEntity.ok(responseDto);
+    }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<StatusResponseDto> illegalArgumentExceptionHandler(IllegalArgumentException ex){
+
+    @ExceptionHandler(CardNotFoundException.class)
+    public ResponseEntity<StatusResponseDto> CardNotFoundExceptionHandler(CardNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
             new StatusResponseDto(
                 HttpStatus.NOT_FOUND.value(),
+                ex.getMessage()
+            )
+        );
+    }
+
+    @ExceptionHandler(AuthorizeException.class)
+    public ResponseEntity<StatusResponseDto> AuthorizeExceptionHandler(AuthorizeException ex){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+            new StatusResponseDto(
+                HttpStatus.UNAUTHORIZED.value(),
                 ex.getMessage()
             )
         );

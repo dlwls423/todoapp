@@ -4,22 +4,24 @@ import com.sparta.todoapp.entity.Card;
 import java.time.LocalDateTime;
 import lombok.Getter;
 
+
 @Getter
-public class ChosenCardResponseDto {
+public class CardInListResponseDto {
+
     private Long cardId;
 
     private String title;
 
-    private String content;
+    private boolean complete;
 
     private LocalDateTime createdAt;
 
     private String username;
 
-    public ChosenCardResponseDto(Card card){
+    public CardInListResponseDto(Card card){
         this.cardId = card.getCardId();
         this.title = card.getTitle();
-        this.content = card.getContent();
+        this.complete = card.isComplete();
         this.createdAt = card.getCreatedAt();
         this.username = card.getUser().getUsername();
     }
