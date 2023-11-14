@@ -46,6 +46,10 @@ public class Card extends TimeEntity {
         this.title = cardRequestDto.getTitle();
         this.content = cardRequestDto.getContent();
     }
+
+    public void setComplete(boolean b) {
+        this.complete = b;
+    }
 }
 
 

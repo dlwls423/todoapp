@@ -58,6 +58,13 @@ public class CardService {
         return new CardResponseDto(card);
     }
 
+    @Transactional
+    public void completeCard(Long cardId, User user) {
+        Card card = getCardEntity(cardId);
+        checkUser(card, user);
+        card.setComplete(true);
+    }
+
     private Card getCardEntity(Long cardId){
         Card card = cardRepository.findById(cardId).orElseThrow(
             () -> new CardNotFoundException("해당 카드를 찾을 수 없습니다.")
