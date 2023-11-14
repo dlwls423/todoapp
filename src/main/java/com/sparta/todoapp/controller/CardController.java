@@ -2,6 +2,7 @@ package com.sparta.todoapp.controller;
 
 import com.sparta.todoapp.dto.CardRequestDto;
 import com.sparta.todoapp.dto.CardResponseDto;
+import com.sparta.todoapp.dto.ChosenCardResponseDto;
 import com.sparta.todoapp.dto.StatusResponseDto;
 import com.sparta.todoapp.security.UserDetailsImpl;
 import com.sparta.todoapp.service.CardService;
@@ -37,8 +38,8 @@ public class CardController {
     }
 
     @GetMapping("/{cardId}")
-    public ResponseEntity<CardResponseDto> getCard(@PathVariable Long cardId){
-        CardResponseDto responseDto = cardService.getCard(cardId);
+    public ResponseEntity<ChosenCardResponseDto> getCard(@PathVariable Long cardId){
+        ChosenCardResponseDto responseDto = cardService.getCard(cardId);
         return ResponseEntity.ok(responseDto);
     }
 

@@ -2,6 +2,7 @@ package com.sparta.todoapp.service;
 
 import com.sparta.todoapp.dto.CardRequestDto;
 import com.sparta.todoapp.dto.CardResponseDto;
+import com.sparta.todoapp.dto.ChosenCardResponseDto;
 import com.sparta.todoapp.entity.Card;
 import com.sparta.todoapp.entity.User;
 import com.sparta.todoapp.repository.CardRepository;
@@ -27,9 +28,9 @@ public class CardService {
         return new CardResponseDto(saveCard);
     }
 
-    public CardResponseDto getCard(Long cardId) {
+    public ChosenCardResponseDto getCard(Long cardId) {
         Card card = getCardEntity(cardId);
-        CardResponseDto responseDto = new CardResponseDto(card);
+        ChosenCardResponseDto responseDto = new ChosenCardResponseDto(card);
         return responseDto;
     }
 
