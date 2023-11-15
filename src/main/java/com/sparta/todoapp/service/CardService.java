@@ -1,6 +1,6 @@
 package com.sparta.todoapp.service;
 
-import com.sparta.todoapp.controller.exception.AccessToHiddenCardException;
+import com.sparta.todoapp.controller.exception.BadAccessToCardException;
 import com.sparta.todoapp.controller.exception.AuthorizeException;
 import com.sparta.todoapp.controller.exception.EntityNotFoundException;
 import com.sparta.todoapp.dto.CardRequestDto;
@@ -32,20 +32,22 @@ public class CardService {
         return new CardResponseDto(saveCard);
     }
 
-    public CardResponseDto getCard(Long cardId) {
+    public CardResponseDto getCard(Long cardId, User user) {
         Card card = getCardEntity(cardId);
+        checkPrivateCardAuthority(card, user);
         CardResponseDto responseDto = new CardResponseDto(card);
         return responseDto;
     }
 
-    public Map<String,List<CardInListResponseDto>> getCards() {
+    public Map<String,List<CardInListResponseDto>> getCards(User inputUser) {
         Map<String, List<CardInListResponseDto>> usernameCardMap = new HashMap<>();
 
         List<User> userList = userRepository.findAll();
         for (User user : userList) {
-            List<CardInListResponseDto> cardList = cardRepository.findAllByUserAndCompleteFalseOrderByCreatedAtDesc(user)
-                .stream().map(CardInListResponseDto::new).collect(Collectors.toList());
-            usernameCardMap.put(user.getUsername(), cardList);
+            List<Card> cardList = cardRepository.findAllByUserAndCompleteFalseOrderByCreatedAtDesc(user);
+            cardList.removeIf(card -> checkPrivateCardAndUser(card, inputUser));
+            List<CardInListResponseDto> cardResponseDtoList = cardList.stream().map(CardInListResponseDto::new).toList();
+            usernameCardMap.put(user.getUsername(), cardResponseDtoList);
         }
 
         return usernameCardMap;
@@ -66,11 +68,20 @@ public class CardService {
         card.setComplete(true);
     }
 
+    public void checkPrivateCardAuthority(Card card, User user){
+        if(checkPrivateCardAndUser(card, user))
+            throw new BadAccessToCardException("비공개된 카드입니다.");
+    }
+
+    public boolean checkPrivateCardAndUser(Card card, User user){
+        return card.isPrivateCard() && !card.getUser().getUsername().equals(user.getUsername());
+    }
+
     public Card getCardEntity(Long cardId){
         Card card = cardRepository.findById(cardId).orElseThrow(
             () -> new EntityNotFoundException("해당 카드를 찾을 수 없습니다.")
         );
-        if(card.isComplete()) throw new AccessToHiddenCardException("숨겨진 카드입니다.");
+        if(card.isComplete()) throw new BadAccessToCardException("완료된 카드입니다.");
         return card;
     }
 

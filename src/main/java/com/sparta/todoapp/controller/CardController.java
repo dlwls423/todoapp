@@ -39,14 +39,14 @@ public class CardController extends ExceptionHandler {
     }
 
     @GetMapping("/{cardId}")
-    public ResponseEntity<CardResponseDto> getCard(@PathVariable Long cardId){
-        CardResponseDto responseDto = cardService.getCard(cardId);
+    public ResponseEntity<CardResponseDto> getCard(@PathVariable Long cardId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        CardResponseDto responseDto = cardService.getCard(cardId, userDetails.getUser());
         return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping
-    public ResponseEntity<Map<String, List<CardInListResponseDto>>> getCards(){
-        Map<String, List<CardInListResponseDto>> usernameCardMap = cardService.getCards();
+    public ResponseEntity<Map<String, List<CardInListResponseDto>>> getCards(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        Map<String, List<CardInListResponseDto>> usernameCardMap = cardService.getCards(userDetails.getUser());
 
         return ResponseEntity.ok(usernameCardMap);
     }

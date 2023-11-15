@@ -1,6 +1,6 @@
 package com.sparta.todoapp.controller;
 
-import com.sparta.todoapp.controller.exception.AccessToHiddenCardException;
+import com.sparta.todoapp.controller.exception.BadAccessToCardException;
 import com.sparta.todoapp.controller.exception.AuthorizeException;
 import com.sparta.todoapp.controller.exception.EntityNotFoundException;
 import com.sparta.todoapp.dto.StatusResponseDto;
@@ -31,8 +31,9 @@ public class ExceptionHandler {
         );
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(AccessToHiddenCardException.class)
-    public ResponseEntity<StatusResponseDto> AccessToHiddenCardExceptionHandler(AccessToHiddenCardException ex){
+    @org.springframework.web.bind.annotation.ExceptionHandler(BadAccessToCardException.class)
+    public ResponseEntity<StatusResponseDto> BadAccessToCardExceptionHandler(
+        BadAccessToCardException ex){
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
             new StatusResponseDto(
                 HttpStatus.FORBIDDEN.value(),

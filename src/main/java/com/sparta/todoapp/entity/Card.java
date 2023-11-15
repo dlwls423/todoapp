@@ -32,6 +32,9 @@ public class Card extends TimeEntity {
     @Column
     private boolean complete = false;
 
+    @Column
+    private boolean privateCard = false;
+
     @ManyToOne
     @JoinColumn(name="user_id")
     private User user;
@@ -39,16 +42,18 @@ public class Card extends TimeEntity {
     public Card(CardRequestDto cardRequestDto, User user) {
         this.title = cardRequestDto.getTitle();
         this.content = cardRequestDto.getContent();
+        this.privateCard = cardRequestDto.isPrivateCard();
         this.user = user;
     }
 
     public void update(CardRequestDto cardRequestDto) {
         this.title = cardRequestDto.getTitle();
         this.content = cardRequestDto.getContent();
+        this.privateCard = cardRequestDto.isPrivateCard();
     }
 
-    public void setComplete(boolean b) {
-        this.complete = b;
+    public void setComplete(boolean complete) {
+        this.complete = complete;
     }
 }
 
