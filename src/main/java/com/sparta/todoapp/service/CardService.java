@@ -1,7 +1,7 @@
 package com.sparta.todoapp.service;
 
 import com.sparta.todoapp.controller.exception.AuthorizeException;
-import com.sparta.todoapp.controller.exception.CardNotFoundException;
+import com.sparta.todoapp.controller.exception.EntityNotFoundException;
 import com.sparta.todoapp.dto.CardRequestDto;
 import com.sparta.todoapp.dto.CardInListResponseDto;
 import com.sparta.todoapp.dto.CardResponseDto;
@@ -67,7 +67,7 @@ public class CardService {
 
     private Card getCardEntity(Long cardId){
         Card card = cardRepository.findById(cardId).orElseThrow(
-            () -> new CardNotFoundException("해당 카드를 찾을 수 없습니다.")
+            () -> new EntityNotFoundException("해당 카드를 찾을 수 없습니다.")
         );
         return card;
     }

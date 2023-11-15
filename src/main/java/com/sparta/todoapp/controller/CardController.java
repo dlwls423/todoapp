@@ -1,7 +1,7 @@
 package com.sparta.todoapp.controller;
 
 import com.sparta.todoapp.controller.exception.AuthorizeException;
-import com.sparta.todoapp.controller.exception.CardNotFoundException;
+import com.sparta.todoapp.controller.exception.EntityNotFoundException;
 import com.sparta.todoapp.dto.CardRequestDto;
 import com.sparta.todoapp.dto.CardInListResponseDto;
 import com.sparta.todoapp.dto.CardResponseDto;
@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,8 +71,8 @@ public class CardController {
         );
     }
 
-    @ExceptionHandler(CardNotFoundException.class)
-    public ResponseEntity<StatusResponseDto> CardNotFoundExceptionHandler(CardNotFoundException ex){
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<StatusResponseDto> CardNotFoundExceptionHandler(EntityNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
             new StatusResponseDto(
                 HttpStatus.NOT_FOUND.value(),

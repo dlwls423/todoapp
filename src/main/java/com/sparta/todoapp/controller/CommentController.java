@@ -1,6 +1,7 @@
 package com.sparta.todoapp.controller;
 
-import com.sparta.todoapp.controller.exception.CardNotFoundException;
+import com.sparta.todoapp.controller.exception.AuthorizeException;
+import com.sparta.todoapp.controller.exception.EntityNotFoundException;
 import com.sparta.todoapp.dto.CommentRequestDto;
 import com.sparta.todoapp.dto.CommentResponseDto;
 import com.sparta.todoapp.dto.StatusResponseDto;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,11 +37,32 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
-    @ExceptionHandler(CardNotFoundException.class)
-    public ResponseEntity<StatusResponseDto> CardNotFoundExceptionHandler(CardNotFoundException ex){
+    @PatchMapping("/{commentId}")
+    public ResponseEntity<CommentResponseDto> updateComment(
+        @PathVariable Long cardId, @PathVariable Long commentId,
+        @RequestBody CommentRequestDto requestDto,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        CommentResponseDto responseDto = commentService.updateComment(cardId, commentId, requestDto, userDetails.getUser());
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<StatusResponseDto> CardNotFoundExceptionHandler(EntityNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
             new StatusResponseDto(
                 HttpStatus.NOT_FOUND.value(),
+                ex.getMessage()
+            )
+        );
+    }
+
+    @ExceptionHandler(AuthorizeException.class)
+    public ResponseEntity<StatusResponseDto> AuthorizeExceptionHandler(AuthorizeException ex){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+            new StatusResponseDto(
+                HttpStatus.UNAUTHORIZED.value(),
                 ex.getMessage()
             )
         );
