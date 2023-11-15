@@ -80,7 +80,7 @@ public class CommentService {
 
     private void checkUser(Comment comment, User user){
         if(!comment.getUser().getUsername().equals(user.getUsername())){
-            throw new AuthorizeException("권한이 없습니다.");
+            throw new AuthorizeException("작성자만 삭제/수정할 수 있습니다.");
         }
     }
 }

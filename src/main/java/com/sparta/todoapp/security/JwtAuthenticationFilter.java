@@ -57,7 +57,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
 
-        insertStatusInfoIntoResponse(response, HttpStatus.BAD_REQUEST.value(), failed.getMessage());
+        insertStatusInfoIntoResponse(response, HttpStatus.BAD_REQUEST.value(), "회원을 찾을 수 없습니다.");
     }
 
     public void insertStatusInfoIntoResponse(HttpServletResponse response, int statusCode, String msg) throws IOException{

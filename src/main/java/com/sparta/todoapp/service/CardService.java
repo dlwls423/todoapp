@@ -74,7 +74,7 @@ public class CardService {
 
     private void checkUser(Card card, User user){
         if(!card.getUser().getUsername().equals(user.getUsername())){
-            throw new AuthorizeException("권한이 없습니다.");
+            throw new AuthorizeException("작성자만 삭제/수정할 수 있습니다.");
         }
     }
 }
