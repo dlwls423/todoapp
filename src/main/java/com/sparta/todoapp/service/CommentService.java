@@ -9,6 +9,8 @@ import com.sparta.todoapp.entity.Comment;
 import com.sparta.todoapp.entity.User;
 import com.sparta.todoapp.repository.CardRepository;
 import com.sparta.todoapp.repository.CommentRepository;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,16 @@ public class CommentService {
         Comment comment = new Comment(requestDto, user, card);
         Comment saveComment = commentRepository.save(comment);
         return new CommentResponseDto(saveComment);
+    }
+
+    public List<CommentResponseDto> getComments(Long cardId) {
+        List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
+
+        Card card = getCardEntity(cardId);
+        commentResponseDtoList = commentRepository.findAllByCard(card)
+            .stream().map(CommentResponseDto::new).toList();
+
+        return commentResponseDtoList;
     }
 
     @Transactional

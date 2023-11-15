@@ -7,12 +7,14 @@ import com.sparta.todoapp.dto.CommentResponseDto;
 import com.sparta.todoapp.dto.StatusResponseDto;
 import com.sparta.todoapp.security.UserDetailsImpl;
 import com.sparta.todoapp.service.CommentService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +38,12 @@ public class CommentController {
         CommentResponseDto responseDto = commentService.createComment(cardId, requestDto, userDetails.getUser());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CommentResponseDto>> getComments(@PathVariable Long cardId){
+        List<CommentResponseDto> responseDtoList = commentService.getComments(cardId);
+        return ResponseEntity.ok(responseDtoList);
     }
 
     @PatchMapping("/{commentId}")
