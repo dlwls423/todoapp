@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -66,6 +67,16 @@ public class CardController extends ExceptionHandler {
                 "할일카드 완료"
             )
         );
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<CardInListResponseDto>> getCardsMatchSearchWord(
+        @RequestParam("title") String searchWord,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        List<CardInListResponseDto> cardList = cardService.getCardsMatchSearchWord(searchWord, userDetails.getUser());
+
+        return ResponseEntity.ok(cardList);
     }
 
 }

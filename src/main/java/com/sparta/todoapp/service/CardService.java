@@ -68,6 +68,12 @@ public class CardService {
         card.setComplete(true);
     }
 
+    public List<CardInListResponseDto> getCardsMatchSearchWord(String searchWord, User user) {
+        List<Card> cardList = cardRepository.findAllByTitleContainsAndCompleteFalseOrderByCreatedAtDesc(searchWord);
+        cardList.removeIf(card -> checkPrivateCardAndUser(card, user));
+        return cardList.stream().map(CardInListResponseDto::new).toList();
+    }
+
     public void checkPrivateCardAuthority(Card card, User user){
         if(checkPrivateCardAndUser(card, user))
             throw new BadAccessToCardException("비공개된 카드입니다.");

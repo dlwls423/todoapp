@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface CardRepository extends JpaRepository<Card, Long> {
 
     List<Card> findAllByUserAndCompleteFalseOrderByCreatedAtDesc(User user);
+
+    List<Card> findAllByTitleContainsAndCompleteFalseOrderByCreatedAtDesc(String searchWord);
 }
