@@ -38,6 +38,14 @@ public class CommentService {
         return new CommentResponseDto(comment);
     }
 
+    public void deleteComment(Long cardId, Long commentId, User user) {
+        Card card = getCardEntity(cardId);
+        Comment comment = getCommentEntity(commentId);
+        checkCard(comment, card);
+        checkUser(comment, user);
+        commentRepository.delete(comment);
+    }
+
     private Card getCardEntity(Long cardId){
         Card card = cardRepository.findById(cardId).orElseThrow(
             () -> new EntityNotFoundException("해당 카드를 찾을 수 없습니다.")
@@ -47,7 +55,7 @@ public class CommentService {
 
     private Comment getCommentEntity(Long commentId){
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-            () -> new EntityNotFoundException("해당 댓글를 찾을 수 없습니다.")
+            () -> new EntityNotFoundException("해당 댓글을 찾을 수 없습니다.")
         );
         return comment;
     }
