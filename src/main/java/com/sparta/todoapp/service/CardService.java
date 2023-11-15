@@ -1,5 +1,6 @@
 package com.sparta.todoapp.service;
 
+import com.sparta.todoapp.controller.exception.AccessToHiddenCardException;
 import com.sparta.todoapp.controller.exception.AuthorizeException;
 import com.sparta.todoapp.controller.exception.EntityNotFoundException;
 import com.sparta.todoapp.dto.CardRequestDto;
@@ -42,7 +43,7 @@ public class CardService {
 
         List<User> userList = userRepository.findAll();
         for (User user : userList) {
-            List<CardInListResponseDto> cardList = cardRepository.findAllByUserOrderByCreatedAtDesc(user)
+            List<CardInListResponseDto> cardList = cardRepository.findAllByUserAndCompleteFalseOrderByCreatedAtDesc(user)
                 .stream().map(CardInListResponseDto::new).collect(Collectors.toList());
             usernameCardMap.put(user.getUsername(), cardList);
         }
@@ -65,14 +66,15 @@ public class CardService {
         card.setComplete(true);
     }
 
-    private Card getCardEntity(Long cardId){
+    public Card getCardEntity(Long cardId){
         Card card = cardRepository.findById(cardId).orElseThrow(
             () -> new EntityNotFoundException("해당 카드를 찾을 수 없습니다.")
         );
+        if(card.isComplete()) throw new AccessToHiddenCardException("숨겨진 카드입니다.");
         return card;
     }
 
-    private void checkUser(Card card, User user){
+    public void checkUser(Card card, User user){
         if(!card.getUser().getUsername().equals(user.getUsername())){
             throw new AuthorizeException("작성자만 삭제/수정할 수 있습니다.");
         }

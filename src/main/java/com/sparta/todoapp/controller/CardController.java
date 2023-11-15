@@ -1,9 +1,7 @@
 package com.sparta.todoapp.controller;
 
-import com.sparta.todoapp.controller.exception.AuthorizeException;
-import com.sparta.todoapp.controller.exception.EntityNotFoundException;
-import com.sparta.todoapp.dto.CardRequestDto;
 import com.sparta.todoapp.dto.CardInListResponseDto;
+import com.sparta.todoapp.dto.CardRequestDto;
 import com.sparta.todoapp.dto.CardResponseDto;
 import com.sparta.todoapp.dto.StatusResponseDto;
 import com.sparta.todoapp.security.UserDetailsImpl;
@@ -14,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/cards")
-public class CardController {
+public class CardController extends ExceptionHandler {
 
     private final CardService cardService;
 
@@ -67,26 +64,6 @@ public class CardController {
             new StatusResponseDto(
                 HttpStatus.OK.value(),
                 "할일카드 완료"
-            )
-        );
-    }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<StatusResponseDto> CardNotFoundExceptionHandler(EntityNotFoundException ex){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-            new StatusResponseDto(
-                HttpStatus.NOT_FOUND.value(),
-                ex.getMessage()
-            )
-        );
-    }
-
-    @ExceptionHandler(AuthorizeException.class)
-    public ResponseEntity<StatusResponseDto> AuthorizeExceptionHandler(AuthorizeException ex){
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-            new StatusResponseDto(
-                HttpStatus.UNAUTHORIZED.value(),
-                ex.getMessage()
             )
         );
     }

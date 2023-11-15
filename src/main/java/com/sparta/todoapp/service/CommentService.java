@@ -7,7 +7,6 @@ import com.sparta.todoapp.dto.CommentResponseDto;
 import com.sparta.todoapp.entity.Card;
 import com.sparta.todoapp.entity.Comment;
 import com.sparta.todoapp.entity.User;
-import com.sparta.todoapp.repository.CardRepository;
 import com.sparta.todoapp.repository.CommentRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +20,10 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
 
-    private final CardRepository cardRepository;
+    private final CardService cardService;
 
     public CommentResponseDto createComment(Long cardId, CommentRequestDto requestDto, User user) {
-        Card card = getCardEntity(cardId);
+        Card card = cardService.getCardEntity(cardId);
         Comment comment = new Comment(requestDto, user, card);
         Comment saveComment = commentRepository.save(comment);
         return new CommentResponseDto(saveComment);
@@ -33,7 +32,7 @@ public class CommentService {
     public List<CommentResponseDto> getComments(Long cardId) {
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
-        Card card = getCardEntity(cardId);
+        Card card = cardService.getCardEntity(cardId);
         commentResponseDtoList = commentRepository.findAllByCard(card)
             .stream().map(CommentResponseDto::new).toList();
 
@@ -42,7 +41,7 @@ public class CommentService {
 
     @Transactional
     public CommentResponseDto updateComment(Long cardId, Long commentId, CommentRequestDto requestDto, User user) {
-        Card card = getCardEntity(cardId);
+        Card card = cardService.getCardEntity(cardId);
         Comment comment = getCommentEntity(commentId);
         checkCard(comment, card);
         checkUser(comment, user);
@@ -51,19 +50,13 @@ public class CommentService {
     }
 
     public void deleteComment(Long cardId, Long commentId, User user) {
-        Card card = getCardEntity(cardId);
+        Card card = cardService.getCardEntity(cardId);
         Comment comment = getCommentEntity(commentId);
         checkCard(comment, card);
         checkUser(comment, user);
         commentRepository.delete(comment);
     }
 
-    private Card getCardEntity(Long cardId){
-        Card card = cardRepository.findById(cardId).orElseThrow(
-            () -> new EntityNotFoundException("해당 카드를 찾을 수 없습니다.")
-        );
-        return card;
-    }
 
     private Comment getCommentEntity(Long commentId){
         Comment comment = commentRepository.findById(commentId).orElseThrow(
