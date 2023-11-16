@@ -12,8 +12,6 @@ public class CardInListResponseDto {
 
     private String title;
 
-    private boolean complete;
-
     private LocalDateTime createdAt;
 
     private String username;
@@ -21,7 +19,6 @@ public class CardInListResponseDto {
     public CardInListResponseDto(Card card){
         this.cardId = card.getCardId();
         this.title = card.getTitle();
-        this.complete = card.isComplete();
         this.createdAt = card.getCreatedAt();
         this.username = card.getUser().getUsername();
     }
