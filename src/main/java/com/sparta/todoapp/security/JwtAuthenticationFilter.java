@@ -3,6 +3,7 @@ package com.sparta.todoapp.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.todoapp.dto.StatusResponseDto;
 import com.sparta.todoapp.dto.UserRequestDto;
+import com.sparta.todoapp.entity.UserRoleEnum;
 import com.sparta.todoapp.jwt.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,11 +45,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
-
+        UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
 
-        String token = jwtUtil.createToken(username);
-
+        String token = jwtUtil.createToken(username, role);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
 
         insertStatusInfoIntoResponse(response, HttpStatus.OK.value(), "로그인 성공");
@@ -56,8 +56,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
-
-        insertStatusInfoIntoResponse(response, HttpStatus.BAD_REQUEST.value(), "회원을 찾을 수 없습니다.");
+        insertStatusInfoIntoResponse(response, HttpStatus.UNAUTHORIZED.value(), "회원을 찾을 수 없습니다.");
     }
 
     public void insertStatusInfoIntoResponse(HttpServletResponse response, int statusCode, String msg) throws IOException{
