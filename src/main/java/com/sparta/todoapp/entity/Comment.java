@@ -41,4 +41,10 @@ public class Comment {
     public void updateContent(String content) {
         this.content = content;
     }
+
+    public Comment(String content, User user, Card card) {
+        this.content = content;
+        this.user = user;
+        this.card = card;
+    }
 }

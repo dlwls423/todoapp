@@ -55,6 +55,14 @@ public class Card extends TimeEntity {
     public void setComplete(boolean complete) {
         this.complete = complete;
     }
+
+    public Card(String title, String content, boolean complete, boolean privateCard, User user) {
+        this.title = title;
+        this.content = content;
+        this.complete = complete;
+        this.privateCard = privateCard;
+        this.user = user;
+    }
 }
 
 
