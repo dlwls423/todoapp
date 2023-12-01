@@ -6,18 +6,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class CardTest {
-    Card card;
+class CommentTest {
+    Comment comment;
 
     @BeforeEach()
     void setUp() {
-        card = new Card();
-    }
-    @Test
-    @DisplayName("setComplete 테스트")
-    void test1() {
-        card.setComplete(true);
-        assertTrue(card.isComplete());
+        comment = new Comment();
     }
 
+    @Test
+    @DisplayName("updateContent 테스트")
+    void test1() {
+        comment.updateContent("안녕하세요");
+        assertEquals("안녕하세요", comment.getContent());
+    }
 }
