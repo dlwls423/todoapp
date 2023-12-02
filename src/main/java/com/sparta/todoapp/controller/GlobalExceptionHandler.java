@@ -9,9 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-public class ExceptionHandler {
-    @org.springframework.web.bind.annotation.ExceptionHandler(EntityNotFoundException.class)
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<StatusResponseDto> CardNotFoundExceptionHandler(EntityNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
             new StatusResponseDto(
@@ -21,7 +25,7 @@ public class ExceptionHandler {
         );
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(AuthorizeException.class)
+    @ExceptionHandler(AuthorizeException.class)
     public ResponseEntity<StatusResponseDto> AuthorizeExceptionHandler(AuthorizeException ex){
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
             new StatusResponseDto(
@@ -31,7 +35,7 @@ public class ExceptionHandler {
         );
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(BadAccessToCardException.class)
+    @ExceptionHandler(BadAccessToCardException.class)
     public ResponseEntity<StatusResponseDto> BadAccessToCardExceptionHandler(
         BadAccessToCardException ex){
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(

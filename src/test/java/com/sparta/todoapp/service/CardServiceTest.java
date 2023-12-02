@@ -228,7 +228,7 @@ class CardServiceTest {
 
             // then
             System.out.println("Title: " + responseDto.getTitle());
-            assertEquals(responseDto.getTitle(), responseDto.getTitle());
+            assertEquals(requestDto.getTitle(), responseDto.getTitle());
         }
 
         @Test

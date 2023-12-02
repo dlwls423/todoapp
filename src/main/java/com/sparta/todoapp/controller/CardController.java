@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/cards")
-public class CardController extends ExceptionHandler {
+public class CardController {
 
     private final CardService cardService;
 

@@ -39,7 +39,7 @@ class CommentServiceTest {
     void test1() {
         // given
         CommentService commentService = new CommentService(commentRepository, cardService);
-        CommentRequestDto requestDto = new CommentRequestDto();
+        CommentRequestDto requestDto = new CommentRequestDto("내용");
         User user = new User("lucy", "1234");
         Card card = new Card("제목", "내용", false, false, user);
         Comment comment = new Comment(requestDto, user, card);
@@ -89,8 +89,7 @@ class CommentServiceTest {
         User user = new User("lucy", "1234");
         Card card = new Card("제목", "내용", false, false, user);
         Comment comment = new Comment("댓글", user, card);
-        CommentRequestDto requestDto = new CommentRequestDto();
-        requestDto.setContent("댓글 수정");
+        CommentRequestDto requestDto = new CommentRequestDto("댓글 수정");
 
         given(cardService.getCardEntity(1L)).willReturn(card);
         given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
@@ -111,8 +110,7 @@ class CommentServiceTest {
         Card card1 = new Card("제목", "내용", false, false, user);
         Card card2 = new Card("제목", "내용", false, false, user);
         Comment comment = new Comment("댓글", user, card2);
-        CommentRequestDto requestDto = new CommentRequestDto();
-        requestDto.setContent("댓글 수정");
+        CommentRequestDto requestDto = new CommentRequestDto("댓글 수정");
 
         given(cardService.getCardEntity(1L)).willReturn(card1);
         given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
@@ -135,8 +133,7 @@ class CommentServiceTest {
         User user2 = new User("lucy2", "1234");
         Card card = new Card("제목", "내용", false, false, user1);
         Comment comment = new Comment("댓글", user1, card);
-        CommentRequestDto requestDto = new CommentRequestDto();
-        requestDto.setContent("댓글 수정");
+        CommentRequestDto requestDto = new CommentRequestDto("댓글 수정");
 
         given(cardService.getCardEntity(1L)).willReturn(card);
         given(commentRepository.findById(1L)).willReturn(Optional.of(comment));

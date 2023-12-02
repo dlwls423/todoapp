@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/cards/{cardId}/comments")
-public class CommentController extends ExceptionHandler{
+public class CommentController {
 
     private final CommentService commentService;
 
