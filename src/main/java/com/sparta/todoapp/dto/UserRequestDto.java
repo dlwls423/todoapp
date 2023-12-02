@@ -13,4 +13,9 @@ public class UserRequestDto {
     @Size(min=8, max=15)
     @Pattern(regexp = "^[a-zA-Z0-9]*$")
     private String password;
+
+    public UserRequestDto(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 }

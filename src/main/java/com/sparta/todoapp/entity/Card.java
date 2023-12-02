@@ -63,6 +63,10 @@ public class Card extends TimeEntity {
         this.privateCard = privateCard;
         this.user = user;
     }
+
+    public void setCardId(Long cardId) {
+        this.cardId = cardId;
+    }
 }
 
 
