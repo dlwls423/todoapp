@@ -63,11 +63,14 @@ public class CardControllerTest {
 
     static User testUser;
 
+    CardRequestDto requestDto;
+
     @BeforeEach
     public void setup() {
         mvc = MockMvcBuilders.webAppContextSetup(context)
             .apply(springSecurity(new MockSpringSecurityFilter()))
             .build();
+        requestDto = new CardRequestDto("카드 제목", "카드 내용", false);
     }
 
     private void mockUserSetup() {
@@ -84,7 +87,6 @@ public class CardControllerTest {
     void test1() throws Exception {
         //given
         mockUserSetup();
-        CardRequestDto requestDto = new CardRequestDto("카드 제목", "카드 내용", false);
 
         //when - then
         mvc.perform(post("/api/cards")
@@ -101,7 +103,6 @@ public class CardControllerTest {
     void test2() throws Exception {
         //given
         mockUserSetup();
-        CardRequestDto requestDto = new CardRequestDto("카드 제목", "카드 내용", false);
         CardResponseDto responseDto = new CardResponseDto(new Card(requestDto, testUser));
         given(cardService.getCard(1L, testUser)).willReturn(responseDto);
 
@@ -139,7 +140,6 @@ public class CardControllerTest {
     void test4() throws Exception {
         //given
         mockUserSetup();
-        CardRequestDto requestDto = new CardRequestDto("제목", "내용", false);
 
         //when - then
         mvc.perform(put("/api/cards/{cardId}", 1L )

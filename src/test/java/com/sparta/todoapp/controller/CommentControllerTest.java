@@ -64,13 +64,10 @@ public class CommentControllerTest {
     CommentService commentService;
 
     static User testUser;
-
-    @BeforeEach
-    public void setup() {
-        mvc = MockMvcBuilders.webAppContextSetup(context)
-            .apply(springSecurity(new MockSpringSecurityFilter()))
-            .build();
-    }
+    Card card;
+    CommentRequestDto requestDto;
+    Comment comment;
+    CommentResponseDto responseDto;
 
     private void mockUserSetup() {
         String username = "leeyejin";
@@ -81,16 +78,24 @@ public class CommentControllerTest {
             testUserDetails.getAuthorities());
     }
 
+    @BeforeEach
+    public void setup() {
+        // given
+        mvc = MockMvcBuilders.webAppContextSetup(context)
+            .apply(springSecurity(new MockSpringSecurityFilter()))
+            .build();
+
+        mockUserSetup();
+        card = new Card("제목", "내용", false, false, testUser);
+        requestDto = new CommentRequestDto("댓글 내용");
+        comment = new Comment(requestDto, testUser, card);
+        responseDto = new CommentResponseDto(comment);
+    }
+
     @Test
     @DisplayName("댓글 생성")
     void test1() throws Exception {
-        //given
-        mockUserSetup();
-        Card card = new Card("제목", "내용", false, false, testUser);
-        CommentRequestDto requestDto = new CommentRequestDto("댓글 내용");
-        Comment comment = new Comment(requestDto, testUser, card);
-        CommentResponseDto responseDto = new CommentResponseDto(comment);
-
+        // given
         given(commentService.createComment(1L, requestDto, testUser)).willReturn(responseDto);
 
         //when - then
@@ -107,10 +112,6 @@ public class CommentControllerTest {
     @DisplayName("카드별 댓글 조회")
     void test2() throws Exception {
         //given
-        mockUserSetup();
-        Card card = new Card("제목", "내용", false, false, testUser);
-        Comment comment = new Comment("댓글 내용", testUser, card);
-        CommentResponseDto responseDto = new CommentResponseDto(comment);
         List<CommentResponseDto> responseDtoList = new ArrayList<>();
         responseDtoList.add(responseDto);
 
@@ -127,11 +128,6 @@ public class CommentControllerTest {
     @DisplayName("카드 수정")
     void test3() throws Exception {
         //given
-        mockUserSetup();
-        Card card = new Card("제목", "내용", false, false, testUser);
-        CommentRequestDto requestDto = new CommentRequestDto("댓글 내용");
-        Comment comment = new Comment(requestDto, testUser, card);
-        CommentResponseDto responseDto = new CommentResponseDto(comment);
 
         given(commentService.updateComment(1L, 1L, requestDto, testUser)).willReturn(responseDto);
 
@@ -148,9 +144,6 @@ public class CommentControllerTest {
     @Test
     @DisplayName("카드 삭제")
     void test4() throws Exception {
-        //given
-        mockUserSetup();
-
         //when - then
         mvc.perform(delete("/api/cards/{cardId}/comments/{commentId}", 1L, 1L)
                 .principal(mockPrincipal)

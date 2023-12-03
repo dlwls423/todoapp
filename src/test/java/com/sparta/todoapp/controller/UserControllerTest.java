@@ -34,8 +34,6 @@ import org.springframework.web.context.WebApplicationContext;
 public class UserControllerTest {
     private MockMvc mvc;
 
-    private Principal mockPrincipal;
-
     @Autowired
     private WebApplicationContext context;
 
