@@ -140,4 +140,21 @@ class CommentServiceTest {
         assertEquals("작성자만 삭제/수정할 수 있습니다.", exception.getMessage());
     }
 
+    @Test
+    @DisplayName("댓글 삭제")
+    void test6() {
+        // given
+        User user2 = new User("lucy2", "1234");
+        given(cardService.getCardEntity(1L)).willReturn(card);
+        given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
+
+        // when
+        AuthorizeException exception = assertThrows(AuthorizeException.class, () ->
+            commentService.deleteComment(1L, 1L, user2)
+        );
+
+        // then
+        assertEquals("작성자만 삭제/수정할 수 있습니다.", exception.getMessage());
+    }
+
 }
