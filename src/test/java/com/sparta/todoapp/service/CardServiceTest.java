@@ -21,8 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -37,6 +39,22 @@ class CardServiceTest {
     @Mock
     UserRepository userRepository;
 
+    CardService cardService;
+
+    User user1;
+    User user2;
+    Card card;
+    Card privateCard;
+
+    @BeforeEach
+    void setup() {
+        // given
+        cardService = new CardService(cardRepository, userRepository);
+        user1 = new User("user1", "1234");
+        user2 = new User("user2", "1234");
+        card = new Card("제목", "내용", false, false, user1);
+        privateCard = new Card("제목", "내용", false, true, user1);
+    }
 
     @Nested
     @DisplayName("반복 사용되는 매서드")
@@ -45,10 +63,7 @@ class CardServiceTest {
         @DisplayName("카드 id로 카드 찾기")
         void test1() {
             // given
-            CardService cardService = new CardService(cardRepository, userRepository);
             Long cardId = 1L;
-            User user = new User();
-            Card card = new Card("제목", "내용", false, false, user);
             card.setCardId(cardId);
             given(cardRepository.findById(cardId)).willReturn(Optional.of(card));
 
@@ -63,10 +78,7 @@ class CardServiceTest {
         @DisplayName("카드 id로 카드 찾기 - 완료된 카드")
         void test2() {
             // given
-            CardService cardService = new CardService(cardRepository, userRepository);
             Long cardId = 1L;
-            User user = new User();
-            Card card = new Card("제목", "내용", true, false, user);
             card.setCardId(cardId);
             card.setComplete(true);
             given(cardRepository.findById(cardId)).willReturn(Optional.of(card));
@@ -83,12 +95,6 @@ class CardServiceTest {
         @Test
         @DisplayName("카드 권한 없음")
         void test3() {
-            //given
-            CardService cardService = new CardService(cardRepository, userRepository);
-            User user1 = new User("user1", "1234");
-            User user2 = new User("user2", "1234");
-            Card card = new Card("제목", "내용", false, false, user1);
-
             //when
             AuthorizeException exception = assertThrows(AuthorizeException.class, () ->
                 cardService.checkUser(card, user2)
@@ -101,15 +107,9 @@ class CardServiceTest {
         @Test
         @DisplayName("비공개된 카드 - 타인이 접근")
         void test4() {
-            //given
-            CardService cardService = new CardService(cardRepository, userRepository);
-            User user1 = new User("user1", "1234");
-            User user2 = new User("user2", "1234");
-            Card card = new Card("제목", "내용", false, true, user1);
-
             //when
             BadAccessToCardException exception = assertThrows(BadAccessToCardException.class, () ->
-                cardService.checkPrivateCardAuthority(card, user2)
+                cardService.checkPrivateCardAuthority(privateCard, user2)
             );
 
             //then
@@ -119,13 +119,8 @@ class CardServiceTest {
         @Test
         @DisplayName("비공개된 카드 - 작성자가 접근")
         void test5() {
-            //given
-            CardService cardService = new CardService(cardRepository, userRepository);
-            User user1 = new User("user1", "1234");
-            Card card = new Card("제목", "내용", false, true, user1);
-
             //when
-            boolean hasNoAuthority = cardService.checkPrivateCardAndUser(card, user1);
+            boolean hasNoAuthority = cardService.checkPrivateCardAndUser(privateCard, user1);
 
             //then
             assertFalse(hasNoAuthority);
@@ -140,16 +135,13 @@ class CardServiceTest {
         @DisplayName("카드 생성")
         void test6() {
             // given
-            CardService cardService = new CardService(cardRepository, userRepository);
             CardRequestDto cardRequestDto = new CardRequestDto("카드 제목", "카드 내용", false);
-            User user = new User("lucy", "1234");
-            Card card = new Card(cardRequestDto, user);
             card.setCardId(1L);
             CardResponseDto cardResponseDto = new CardResponseDto(card);
             when(cardRepository.save(any(Card.class))).thenReturn(card);
 
             // when
-            CardResponseDto responseDto = cardService.createCard(cardRequestDto, user);
+            CardResponseDto responseDto = cardService.createCard(cardRequestDto, user1);
 
             // then
             assertEquals(cardResponseDto.getCardId(), responseDto.getCardId());
@@ -159,15 +151,12 @@ class CardServiceTest {
         @DisplayName("카드 단일 조회")
         void test7() {
             // given
-            CardService cardService = new CardService(cardRepository, userRepository);
             Long cardId = 1L;
             CardRequestDto requestDto = new CardRequestDto("제목", "내용", false);
-            User user = new User("lucy", "1234");
-            Card card = new Card(requestDto, user);
             given(cardRepository.findById(cardId)).willReturn(Optional.of(card));
 
             // when
-            CardResponseDto responseDto = cardService.getCard(cardId, user);
+            CardResponseDto responseDto = cardService.getCard(cardId, user1);
 
             // then
             assertEquals(card.getCardId(), responseDto.getCardId());
@@ -177,9 +166,6 @@ class CardServiceTest {
         @DisplayName("카드 전체 조회")
         void test8() {
             // given
-            CardService cardService = new CardService(cardRepository, userRepository);
-            User user1 = new User("user1", "1234");
-            User user2 = new User("user2", "1234");
             Card card1 = new Card("카드 제목", "카드 내용", false, false, user1);
             Card card2 = new Card("카드 제목", "카드 내용", false, true, user1);
             Card card3 = new Card("카드 제목", "카드 내용", false, false, user2);
@@ -213,18 +199,14 @@ class CardServiceTest {
         @DisplayName("카드 수정")
         void test9() {
             // given
-            CardService cardService = new CardService(cardRepository, userRepository);
             Long cardId = 1L;
             CardRequestDto requestDto = new CardRequestDto("수정 제목", "수정 내용", false);
-            User user = new User("lucy", "1234");
-
-            Card card = new Card("카드 제목", "카드 내용", false, false, user);
             card.setCardId(cardId);
 
             given(cardRepository.findById(cardId)).willReturn(Optional.of(card));
 
             // when
-            CardResponseDto responseDto = cardService.updateCard(cardId, requestDto, user);
+            CardResponseDto responseDto = cardService.updateCard(cardId, requestDto, user1);
 
             // then
             System.out.println("Title: " + responseDto.getTitle());
@@ -235,15 +217,12 @@ class CardServiceTest {
         @DisplayName("카드 완료 설정")
         void test10() {
             // given
-            CardService cardService = new CardService(cardRepository, userRepository);
             Long cardId = 1L;
-            User user = new User("lucy", "1234");
-            Card card = new Card("카드 제목", "카드 내용", false, false, user);
 
             given(cardRepository.findById(cardId)).willReturn(Optional.of(card));
 
             // when
-            cardService.completeCard(cardId, user);
+            cardService.completeCard(cardId, user1);
 
             // then
             assertTrue(card.isComplete());
@@ -253,11 +232,9 @@ class CardServiceTest {
         @DisplayName("카드 검색 조회")
         void test11() {
             // given
-            CardService cardService = new CardService(cardRepository, userRepository);
-            User user = new User("lucy", "1234");
-            Card card1 = new Card("제목", "내용", false, false, user);
-            Card card2 = new Card("제목", "내용", false, false, user);
-            Card card3 = new Card("제목", "내용", false, true, user);
+            Card card1 = new Card("제목", "내용", false, false, user1);
+            Card card2 = new Card("제목", "내용", false, false, user1);
+            Card card3 = new Card("제목", "내용", false, true, user1);
 
             List<Card> cardList = new ArrayList<>();
             cardList.add(card1);
@@ -267,7 +244,7 @@ class CardServiceTest {
             given(cardRepository.findAllByTitleContainsAndCompleteFalseOrderByCreatedAtDesc("제목")).willReturn(cardList);
 
             // when
-            List<CardInListResponseDto> responseDtoList = cardService.getCardsMatchSearchWord("제목", user);
+            List<CardInListResponseDto> responseDtoList = cardService.getCardsMatchSearchWord("제목", user1);
 
             // then
             assertEquals(3, responseDtoList.size());
