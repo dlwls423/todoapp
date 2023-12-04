@@ -11,6 +11,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,11 +25,13 @@ class UserServiceTest {
     @Mock
     PasswordEncoder passwordEncoder;
 
+    @InjectMocks
+    UserService userService;
+
     @Test
     @DisplayName("회원가입 - 중복 회원 존재")
     void test1() {
         // given
-        UserService userService = new UserService(userRepository, passwordEncoder);
         UserRequestDto userRequestDto = new UserRequestDto("lucy", "11111111");
         User user = new User("lucy", "encodedPassword");
 

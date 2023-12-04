@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -39,6 +40,7 @@ class CardServiceTest {
     @Mock
     UserRepository userRepository;
 
+    @InjectMocks
     CardService cardService;
 
     User user1;
@@ -49,7 +51,6 @@ class CardServiceTest {
     @BeforeEach
     void setup() {
         // given
-        cardService = new CardService(cardRepository, userRepository);
         user1 = new User("user1", "1234");
         user2 = new User("user2", "1234");
         card = new Card("제목", "내용", false, false, user1);

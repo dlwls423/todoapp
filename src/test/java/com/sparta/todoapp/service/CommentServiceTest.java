@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -32,6 +33,7 @@ class CommentServiceTest {
     @Mock
     CardService cardService;
 
+    @InjectMocks
     CommentService commentService;
 
     User user;
@@ -41,7 +43,6 @@ class CommentServiceTest {
 
     @BeforeEach
     void setup() {
-        commentService = new CommentService(commentRepository, cardService);
         user = new User("lucy", "1234");
         card = new Card("제목", "내용", false, false, user);
         requestDto = new CommentRequestDto("내용");
