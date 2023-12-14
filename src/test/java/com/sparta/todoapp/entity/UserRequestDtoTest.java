@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import com.sparta.todoapp.dto.UserRequestDto;
 import java.util.Set;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ public class UserRequestDtoTest {
         @Test
         void createUserRequestDto_success() {
             // given
-            UserRequestDto requestDto = new UserRequestDto("username", "password");
+            UserRequestDto requestDto = new UserRequestDto.mockBuilder().username("username").password("password").build();
 
             // when
             Set<ConstraintViolation<UserRequestDto>> violations = validate(requestDto);

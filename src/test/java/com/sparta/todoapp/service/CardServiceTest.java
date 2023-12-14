@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import com.sparta.todoapp.controller.exception.AuthorizeException;
 import com.sparta.todoapp.controller.exception.BadAccessToCardException;
+import com.sparta.todoapp.controller.exception.EntityNotFoundException;
 import com.sparta.todoapp.dto.CardInListResponseDto;
 import com.sparta.todoapp.dto.CardRequestDto;
 import com.sparta.todoapp.dto.CardResponseDto;
@@ -125,6 +126,21 @@ class CardServiceTest {
 
             //then
             assertFalse(hasNoAuthority);
+        }
+
+        @Test
+        @DisplayName("카드를 찾을 수 없음")
+        void test6() {
+            //given
+            given(cardRepository.findById(1L)).willReturn(Optional.empty());
+
+            //when
+            EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
+                cardService.getCardEntity(1L)
+            );
+
+            //then
+            assertEquals("해당 카드를 찾을 수 없습니다.", exception.getMessage());
         }
     }
 
