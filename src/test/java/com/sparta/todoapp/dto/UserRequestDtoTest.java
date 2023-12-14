@@ -1,4 +1,4 @@
-package com.sparta.todoapp.entity;
+package com.sparta.todoapp.dto;
 
 import static org.assertj.core.api.Assertions.*;
 
